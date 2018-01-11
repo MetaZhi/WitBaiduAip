@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Wit.BaiduAip.Speech;
 
-public class Test : MonoBehaviour
+public class AsrDemo : MonoBehaviour
 {
     public string APIKey = "";
     public string SecretKey = "";
@@ -51,7 +51,7 @@ public class Test : MonoBehaviour
         var data = Asr.ConvertAudioClipToPCM16(_clipRecord);
         StartCoroutine(_asr.Recognize(data, s =>
         {
-            DescriptionText.text = s;
+            DescriptionText.text = s.result[0];
             StartButton.gameObject.SetActive(true);
         }));
     }

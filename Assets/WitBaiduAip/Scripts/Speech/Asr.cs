@@ -19,45 +19,25 @@ namespace Wit.BaiduAip.Speech
         public string access_token = null;
     }
 
-    public class Asr
+    public class AsrResponse
     {
-        public string SecretKey { get; private set; }
+        public int err_no;
+        public string err_msg;
+        public string sn;
+        public string[] result;
+    }
 
-        public string APIKey { get; private set; }
-        public string Token { get; private set; }
+    public class Asr : Base
+    {
+        private const string UrlAsr = "https://vop.baidu.com/server_api";
 
-        public Asr(string apiKey, string secretKey)
+        public Asr(string apiKey, string secretKey) : base(apiKey, secretKey)
         {
-            APIKey = apiKey;
-            SecretKey = secretKey;
         }
 
-        public IEnumerator GetAccessToken()
+        public IEnumerator Recognize(byte[] data, Action<AsrResponse> callback)
         {
-            var uri =
-                string.Format(
-                    "https://openapi.baidu.com/oauth/2.0/token?grant_type=client_credentials&client_id={0}&client_secret={1}",
-                    APIKey, SecretKey);
-            var www = new WWW(uri);
-            yield return www;
-
-            if (string.IsNullOrEmpty(www.error))
-            {
-                var result = JsonUtility.FromJson<TokenResponse>(www.text);
-                Token = result.access_token;
-                Debug.Log("Get access_token successfully");
-            }
-            else
-            {
-                Debug.LogError(www.error);
-            }
-        }
-
-        public IEnumerator Recognize(byte[] data, Action<string> callback)
-        {
-            var uri =
-                string.Format("http://vop.baidu.com/server_api?lan=zh&cuid={0}&token={1}",
-                    SystemInfo.deviceUniqueIdentifier, Token);
+            var uri = string.Format("{0}?lan=zh&cuid={1}&token={2}", UrlAsr, SystemInfo.deviceUniqueIdentifier, Token);
 
             var headers = new Dictionary<string, string> {{"Content-Type", "audio/pcm;rate=16000"}};
 
@@ -67,7 +47,7 @@ namespace Wit.BaiduAip.Speech
             if (string.IsNullOrEmpty(www.error))
             {
                 Debug.Log(www.text);
-                callback(www.text);
+                callback(JsonUtility.FromJson<AsrResponse>(www.text));
             }
             else
                 Debug.LogError(www.error);
