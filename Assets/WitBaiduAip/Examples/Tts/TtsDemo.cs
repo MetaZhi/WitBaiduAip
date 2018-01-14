@@ -50,6 +50,7 @@ public class TtsDemo : MonoBehaviour
             else
             {
                 DescriptionText.text = s.err_msg;
+				SynthesisButton.gameObject.SetActive(true);
             }
         }));
     }

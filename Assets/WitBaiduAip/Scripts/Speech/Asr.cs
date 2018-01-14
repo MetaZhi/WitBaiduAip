@@ -37,6 +37,13 @@ namespace Wit.BaiduAip.Speech
 
         public IEnumerator Recognize(byte[] data, Action<AsrResponse> callback)
         {
+			yield return PreAction ();
+
+			if (tokenFetchStatus == Base.TokenFetchStatus.Failed) {
+				Debug.LogError("Token fetched failed, please check your APIKey and SecretKey");
+				yield break;
+			}
+
             var uri = string.Format("{0}?lan=zh&cuid={1}&token={2}", UrlAsr, SystemInfo.deviceUniqueIdentifier, Token);
 
             var headers = new Dictionary<string, string> {{"Content-Type", "audio/pcm;rate=16000"}};

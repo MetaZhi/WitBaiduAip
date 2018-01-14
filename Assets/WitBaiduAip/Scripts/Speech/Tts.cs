@@ -50,6 +50,17 @@ namespace Wit.BaiduAip.Speech
         public IEnumerator Synthesis(string text, Action<TtsResponse> callback, int speed = 5, int pit = 5, int vol = 5,
             Pronouncer per = Pronouncer.Female)
         {
+			yield return PreAction ();
+
+			if (tokenFetchStatus == Base.TokenFetchStatus.Failed) {
+				Debug.LogError("Token was fetched failed. Please check your APIKey and SecretKey");
+				callback (new TtsResponse () {
+					err_no = -1,
+					err_msg = "Token was fetched failed. Please check your APIKey and SecretKey"
+				});
+				yield break;
+			}
+
             var param = new Dictionary<string, string>();
             param.Add("tex", text);
             param.Add("tok", Token);
@@ -77,7 +88,7 @@ namespace Wit.BaiduAip.Speech
             if (string.IsNullOrEmpty(www.error))
             {
                 var type = www.responseHeaders["Content-Type"];
-                Debug.Log(type);
+                Debug.Log("response type: " + type);
 
                 if (type == "audio/mp3")
                 {
