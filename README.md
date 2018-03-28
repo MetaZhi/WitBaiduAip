@@ -10,7 +10,7 @@ Unity3d中的百度语音识别和语音合成Restful接口的封装，适用于
 
 更新日志
 ---
-2018年3月28日 加入了平台判断，windows平台使用naudio，android和ios可直接使用ios
+2018年3月28日 加入了平台判断，windows平台使用naudio，android和ios可直接使用ios  
 2018年1月14日 加入了token获取状态的判断
 
 欢迎关注“洪流学堂”微信公众号
