@@ -8,7 +8,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+#if UNITY_STANDALONE || UNITY_EDITOR
 using NAudio.Wave;
+#endif
 using UnityEngine;
 
 namespace Wit.BaiduAip.Speech
@@ -92,7 +94,11 @@ namespace Wit.BaiduAip.Speech
 
                 if (type == "audio/mp3")
                 {
+#if UNITY_STANDALONE || UNITY_EDITOR
                     var response = new TtsResponse {clip = FromMp3Data(www.bytes)};
+#else
+                    var response = new TtsResponse {clip = www.GetAudioClip(false, true, AudioType.MPEG)};
+#endif
                     callback(response);
                 }
                 else
@@ -105,6 +111,8 @@ namespace Wit.BaiduAip.Speech
                 Debug.LogError(www.error);
         }
 
+
+#if UNITY_STANDALONE || UNITY_EDITOR
         /// <summary>
         /// 将mp3格式的字节数组转换为audioclip
         /// </summary>
@@ -140,5 +148,6 @@ namespace Wit.BaiduAip.Speech
             }
             return outputStream;
         }
+#endif
     }
 }

@@ -1,6 +1,7 @@
 .vs
 Library/
 Temp/
+Build/
 *.csproj
 *.sln
 UnityPackageManager/
