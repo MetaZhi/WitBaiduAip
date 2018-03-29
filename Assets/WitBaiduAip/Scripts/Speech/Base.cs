@@ -4,12 +4,22 @@
  * 关注“洪流学堂”公众号，让你快人几步
  */
 
+using System;
 using System.Collections;
 using UnityEngine;
 
 namespace Wit.BaiduAip.Speech
 {
-	public class Base
+    /// <summary>
+    /// 用户解析token的json数据
+    /// </summary>
+    [Serializable]
+    class TokenResponse
+    {
+        public string access_token = null;
+    }
+
+    public class Base
 	{
 		protected enum TokenFetchStatus
 		{
@@ -46,6 +56,7 @@ namespace Wit.BaiduAip.Speech
 			yield return www;
 
 			if (string.IsNullOrEmpty (www.error)) {
+                Debug.Log(www.text);
 				var result = JsonUtility.FromJson<TokenResponse> (www.text);
 				Token = result.access_token;
 				Debug.Log ("Token has been fetched successfully");

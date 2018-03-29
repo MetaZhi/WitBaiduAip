@@ -11,14 +11,6 @@ using UnityEngine;
 
 namespace Wit.BaiduAip.Speech
 {
-    /// <summary>
-    /// 用户解析token的json数据
-    /// </summary>
-    class TokenResponse
-    {
-        public string access_token = null;
-    }
-
     public class AsrResponse
     {
         public int err_no;

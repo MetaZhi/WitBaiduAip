@@ -20,6 +20,7 @@ public class Wav
         {
             value |= ((int) bytes[offset + i]) << (i * 8);
         }
+
         return value;
     }
 
@@ -49,6 +50,7 @@ public class Wav
             int chunkSize = wav[pos] + wav[pos + 1] * 256 + wav[pos + 2] * 65536 + wav[pos + 3] * 16777216;
             pos += 4 + chunkSize;
         }
+
         pos += 8;
 
         // Pos is now positioned to start of actual sound data.  
@@ -73,6 +75,39 @@ public class Wav
                 RightChannel[i] = bytesToFloat(wav[pos], wav[pos + 1]);
                 pos += 2;
             }
+
+            i++;
+        }
+    }
+
+    // wav data without header data
+    public Wav(byte[] wav, int channelCount, int frequency, int pos=0)
+    {
+        ChannelCount = channelCount;
+        this.Frequency = frequency;
+        // Pos is now positioned to start of actual sound data.  
+        SampleCount = (wav.Length - pos) / 2; // 2 bytes per sample (16 bit sound mono)  
+        if (ChannelCount == 2) SampleCount /= 2; // 4 bytes per sample (16 bit stereo)  
+
+        // Allocate memory (right will be null if only mono sound)  
+        LeftChannel = new float[SampleCount];
+        if (ChannelCount == 2) RightChannel = new float[SampleCount];
+        else RightChannel = null;
+
+        // Write to double array/s:  
+        int i = 0;
+        int maxInput = wav.Length - (RightChannel == null ? 1 : 3);
+        // while (pos < wav.Length)  
+        while ((i < SampleCount) && (pos < maxInput))
+        {
+            LeftChannel[i] = bytesToFloat(wav[pos], wav[pos + 1]);
+            pos += 2;
+            if (ChannelCount == 2)
+            {
+                RightChannel[i] = bytesToFloat(wav[pos], wav[pos + 1]);
+                pos += 2;
+            }
+
             i++;
         }
     }

@@ -5,3 +5,4 @@ Build/
 *.csproj
 *.sln
 UnityPackageManager/
+/*.user
