@@ -8,6 +8,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace Wit.BaiduAip.Speech
 {
@@ -38,15 +39,16 @@ namespace Wit.BaiduAip.Speech
 
             var uri = string.Format("{0}?lan=zh&cuid={1}&token={2}", UrlAsr, SystemInfo.deviceUniqueIdentifier, Token);
 
-            var headers = new Dictionary<string, string> {{"Content-Type", "audio/pcm;rate=16000"}};
-
-            var www = new WWW(uri, data, headers);
-            yield return www;
+            var form = new WWWForm();
+            form.AddBinaryData("audio", data);
+            var www = UnityWebRequest.Post(uri, form);
+            www.SetRequestHeader("Content-Type", "audio/pcm;rate=16000");
+            yield return www.SendWebRequest();
 
             if (string.IsNullOrEmpty(www.error))
             {
-                Debug.Log(www.text);
-                callback(JsonUtility.FromJson<AsrResponse>(www.text));
+                Debug.Log(www.downloadHandler.text);
+                callback(JsonUtility.FromJson<AsrResponse>(www.downloadHandler.text));
             }
             else
                 Debug.LogError(www.error);
