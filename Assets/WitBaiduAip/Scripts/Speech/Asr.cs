@@ -12,6 +12,7 @@ using UnityEngine.Networking;
 
 namespace Wit.BaiduAip.Speech
 {
+    [Serializable]
     public class AsrResponse
     {
         public int err_no;
