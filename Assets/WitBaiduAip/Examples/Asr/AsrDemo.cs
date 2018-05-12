@@ -51,7 +51,8 @@ public class AsrDemo : MonoBehaviour
         var data = Asr.ConvertAudioClipToPCM16(_clipRecord);
         StartCoroutine(_asr.Recognize(data, s =>
         {
-            DescriptionText.text = s.result[0];
+            DescriptionText.text = s.result != null && s.result.Length > 0 ? s.result[0] : "未识别到声音";
+
             StartButton.gameObject.SetActive(true);
         }));
     }
