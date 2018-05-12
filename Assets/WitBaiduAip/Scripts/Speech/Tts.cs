@@ -8,7 +8,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -17,6 +16,7 @@ namespace Wit.BaiduAip.Speech
     /// <summary>
     ///     语音合成结果
     /// </summary>
+    [Serializable]
     public class TtsResponse
     {
         public int err_no;

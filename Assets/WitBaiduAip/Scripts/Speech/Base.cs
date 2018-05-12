@@ -7,6 +7,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace Wit.BaiduAip.Speech
 {
@@ -52,12 +53,12 @@ namespace Wit.BaiduAip.Speech
 				string.Format (
 					"https://openapi.baidu.com/oauth/2.0/token?grant_type=client_credentials&client_id={0}&client_secret={1}",
 					APIKey, SecretKey);
-			var www = new WWW (uri);
-			yield return www;
+			var www = UnityWebRequest.Get(uri);
+			yield return www.SendWebRequest();
 
 			if (string.IsNullOrEmpty (www.error)) {
-                Debug.Log(www.text);
-				var result = JsonUtility.FromJson<TokenResponse> (www.text);
+                Debug.Log(www.downloadHandler.text);
+				var result = JsonUtility.FromJson<TokenResponse> (www.downloadHandler.text);
 				Token = result.access_token;
 				Debug.Log ("Token has been fetched successfully");
 				tokenFetchStatus = TokenFetchStatus.Success;
