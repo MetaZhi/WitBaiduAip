@@ -16,7 +16,7 @@ public class AsrDemo : MonoBehaviour
     public Button StopButton;
     public Text DescriptionText;
 
-    private AudioClip _clipRecord = new AudioClip();
+    private AudioClip _clipRecord;
     private Asr _asr;
 
     void Start()
