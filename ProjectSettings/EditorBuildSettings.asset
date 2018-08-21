@@ -4,4 +4,8 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/WitBaiduAip/Examples/Tts/TtsDemo.unity
+    guid: b0c69f86367702e4cb8230b836868587
+  m_configObjects: {}

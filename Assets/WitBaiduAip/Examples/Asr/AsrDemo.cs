@@ -19,6 +19,9 @@ public class AsrDemo : MonoBehaviour
     private AudioClip _clipRecord;
     private Asr _asr;
 
+    // Microphone is not supported in Webgl
+#if !UNITY_WEBGL
+
     void Start()
     {
         _asr = new Asr(APIKey, SecretKey);
@@ -56,4 +59,5 @@ public class AsrDemo : MonoBehaviour
             StartButton.gameObject.SetActive(true);
         }));
     }
+#endif
 }
