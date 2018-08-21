@@ -74,6 +74,9 @@ namespace Wit.BaiduAip.Speech
             param.Add("pit", Mathf.Clamp(pit, 0, 9).ToString());
             param.Add("vol", Mathf.Clamp(vol, 0, 15).ToString());
             param.Add("per", ((int) per).ToString());
+#if UNITY_STANDALONE || UNITY_EDITOR || UNITY_UWP
+            param.Add("aue", "6"); // set to wav, default is mp3
+#endif
 
             string url = UrlTts;
             int i = 0;
@@ -85,7 +88,7 @@ namespace Wit.BaiduAip.Speech
             }
 
 #if UNITY_STANDALONE || UNITY_EDITOR || UNITY_UWP
-            var www = UnityWebRequest.Get(url);
+            var www = UnityWebRequestMultimedia.GetAudioClip(url, AudioType.WAV);
 #else
             var www = UnityWebRequestMultimedia.GetAudioClip(url, AudioType.MPEG);
 #endif
@@ -98,10 +101,10 @@ namespace Wit.BaiduAip.Speech
                 var type = www.GetResponseHeader("Content-Type");
                 Debug.Log("response type: " + type);
 
-                if (type == "audio/mp3")
+                if (type.Contains("audio"))
                 {
 #if UNITY_STANDALONE || UNITY_EDITOR || UNITY_UWP
-                    var clip = GetAudioClipFromMP3ByteArray(www.downloadHandler.data);
+                    var clip = DownloadHandlerAudioClip.GetContent(www);
                     var response = new TtsResponse {clip = clip};
 #else
                     var response = new TtsResponse {clip = DownloadHandlerAudioClip.GetContent(www) };
@@ -117,52 +120,5 @@ namespace Wit.BaiduAip.Speech
             else
                 Debug.LogError(www.error);
         }
-
-
-#if UNITY_STANDALONE || UNITY_EDITOR || UNITY_UWP
-        /// <summary>
-        /// 将mp3格式的字节数组转换为audioclip
-        /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        private AudioClip GetAudioClipFromMP3ByteArray(byte[] mp3Data)
-        {
-            var mp3MemoryStream = new MemoryStream(mp3Data);
-            MP3Sharp.MP3Stream mp3Stream = new MP3Sharp.MP3Stream(mp3MemoryStream);
-
-            //Get the converted stream data
-            MemoryStream convertedAudioStream = new MemoryStream();
-            byte[] buffer = new byte[2048];
-            int bytesReturned = -1;
-            int totalBytesReturned = 0;
-
-            while (bytesReturned != 0)
-            {
-                bytesReturned = mp3Stream.Read(buffer, 0, buffer.Length);
-                convertedAudioStream.Write(buffer, 0, bytesReturned);
-                totalBytesReturned += bytesReturned;
-            }
-
-            Debug.Log("MP3 file has " + mp3Stream.ChannelCount + " channels with a frequency of " +
-                      mp3Stream.Frequency);
-
-            byte[] convertedAudioData = convertedAudioStream.ToArray();
-
-            //bug of mp3sharp that audio with 1 channel has right channel data, to skip them
-            byte[] data = new byte[convertedAudioData.Length / 2];
-            for (int i = 0; i < data.Length; i += 2)
-            {
-                data[i] = convertedAudioData[2 * i];
-                data[i + 1] = convertedAudioData[2 * i + 1];
-            }
-
-            Wav wav = new Wav(data, mp3Stream.ChannelCount, mp3Stream.Frequency);
-
-            AudioClip audioClip = AudioClip.Create("testSound", wav.SampleCount, 1, wav.Frequency, false);
-            audioClip.SetData(wav.LeftChannel, 0);
-
-            return audioClip;
-        }
-#endif
     }
 }
