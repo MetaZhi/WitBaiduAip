@@ -47,7 +47,7 @@ namespace Wit.BaiduAip.Speech
 
             if (string.IsNullOrEmpty(www.error))
             {
-                Debug.Log(www.downloadHandler.text);
+                Debug.Log("[WitBaiduAip]"+www.downloadHandler.text);
                 callback(JsonUtility.FromJson<AsrResponse>(www.downloadHandler.text));
             }
             else

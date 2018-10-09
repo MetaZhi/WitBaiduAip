@@ -50,7 +50,7 @@ public class AsrDemo : MonoBehaviour
         StopButton.gameObject.SetActive(false);
         DescriptionText.text = "Recognizing...";
         Microphone.End(null);
-        Debug.Log("end record");
+        Debug.Log("[WitBaiduAip demo]end record");
         var data = Asr.ConvertAudioClipToPCM16(_clipRecord);
         StartCoroutine(_asr.Recognize(data, s =>
         {

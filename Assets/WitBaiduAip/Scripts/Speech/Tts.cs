@@ -7,7 +7,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
+using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -73,7 +73,7 @@ namespace Wit.BaiduAip.Speech
             param.Add("spd", Mathf.Clamp(speed, 0, 9).ToString());
             param.Add("pit", Mathf.Clamp(pit, 0, 9).ToString());
             param.Add("vol", Mathf.Clamp(vol, 0, 15).ToString());
-            param.Add("per", ((int) per).ToString());
+            param.Add("per", ((int)per).ToString());
 #if UNITY_STANDALONE || UNITY_EDITOR || UNITY_UWP
             param.Add("aue", "6"); // set to wav, default is mp3
 #endif
@@ -92,20 +92,20 @@ namespace Wit.BaiduAip.Speech
 #else
             var www = UnityWebRequestMultimedia.GetAudioClip(url, AudioType.MPEG);
 #endif
-            Debug.Log(www.url);
+            Debug.Log("[WitBaiduAip]" + www.url);
             yield return www.SendWebRequest();
 
 
             if (string.IsNullOrEmpty(www.error))
             {
                 var type = www.GetResponseHeader("Content-Type");
-                Debug.Log("response type: " + type);
+                Debug.Log("[WitBaiduAip]response type: " + type);
 
                 if (type.Contains("audio"))
                 {
 #if UNITY_STANDALONE || UNITY_EDITOR || UNITY_UWP
                     var clip = DownloadHandlerAudioClip.GetContent(www);
-                    var response = new TtsResponse {clip = clip};
+                    var response = new TtsResponse { clip = clip };
 #else
                     var response = new TtsResponse {clip = DownloadHandlerAudioClip.GetContent(www) };
 #endif
@@ -113,12 +113,16 @@ namespace Wit.BaiduAip.Speech
                 }
                 else
                 {
-                    Debug.LogError(www.downloadHandler.text);
-                    callback(JsonUtility.FromJson<TtsResponse>(www.downloadHandler.text));
+                    var textBytes = www.downloadHandler.data;
+                    var errorText = Encoding.UTF8.GetString(textBytes);
+                    Debug.LogError("[WitBaiduAip]" + errorText);
+                    callback(JsonUtility.FromJson<TtsResponse>(errorText));
                 }
             }
             else
+            {
                 Debug.LogError(www.error);
+            }
         }
     }
 }
