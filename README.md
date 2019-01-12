@@ -10,6 +10,7 @@ Unity3d中的百度语音识别和语音合成Restful接口的封装，适用于
 
 更新日志
 ---
+- 2019年1月12日更新支持了WWW类（可以兼容Unity5.x及以前版本）
 - 2018年8月21日 百度API支持了wav格式，移除第三方插件，直接使用原生API
 - 2018年3月29日 加入了UWP平台支持，移除naudio，使用mp3sharp  
 - 2018年3月28日 加入了平台判断，windows平台使用naudio，android和ios可直接使用mp3  

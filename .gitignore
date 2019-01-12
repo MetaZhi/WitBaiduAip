@@ -3,6 +3,7 @@ Library/
 Temp/
 Build/
 [Oo]bj/
+Logs/
 *.csproj
 *.sln
 UnityPackageManager/
