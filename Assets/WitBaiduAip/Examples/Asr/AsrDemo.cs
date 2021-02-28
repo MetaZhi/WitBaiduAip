@@ -14,9 +14,11 @@ public class AsrDemo : MonoBehaviour
     public string SecretKey = "";
     public Button StartButton;
     public Button StopButton;
+    public Button ReplayButton;
     public Text DescriptionText;
 
     private AudioClip _clipRecord;
+    private AudioSource _audioSource;
     private Asr _asr;
 
     // Microphone is not supported in Webgl
@@ -24,6 +26,7 @@ public class AsrDemo : MonoBehaviour
 
     void Start()
     {
+        _audioSource = gameObject.GetComponent<AudioSource>();
         _asr = new Asr(APIKey, SecretKey);
         StartCoroutine(_asr.GetAccessToken());
 
@@ -33,12 +36,17 @@ public class AsrDemo : MonoBehaviour
 
         StartButton.onClick.AddListener(OnClickStartButton);
         StopButton.onClick.AddListener(OnClickStopButton);
+        ReplayButton.onClick.AddListener(OnClickReplayButtion);
+
+        ReplayButton.gameObject.SetActive(false);
     }
 
     private void OnClickStartButton()
     {
         StartButton.gameObject.SetActive(false);
         StopButton.gameObject.SetActive(true);
+        ReplayButton.gameObject.SetActive(false);
+
         DescriptionText.text = "Listening...";
 
         _clipRecord = Microphone.Start(null, false, 30, 16000);
@@ -52,12 +60,18 @@ public class AsrDemo : MonoBehaviour
         Microphone.End(null);
         Debug.Log("[WitBaiduAip demo]end record");
         var data = Asr.ConvertAudioClipToPCM16(_clipRecord);
+        ReplayButton.gameObject.SetActive(true);
         StartCoroutine(_asr.Recognize(data, s =>
         {
             DescriptionText.text = s.result != null && s.result.Length > 0 ? s.result[0] : "未识别到声音";
 
             StartButton.gameObject.SetActive(true);
         }));
+    }
+
+    private void OnClickReplayButtion()
+    {
+        _audioSource.PlayOneShot(_clipRecord);
     }
 #endif
 }

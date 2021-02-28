@@ -8,8 +8,14 @@ Unity3d中的百度语音识别和语音合成Restful接口的封装，适用于
 - 语音识别，见Assets\WitBaiduAip\Examples\Asr.unity
 - 语音合成，见Assets\WitBaiduAip\Examples\Tts.unity
 
+## 开发测试注意
+
+百度语音限制免费调用次数，本库中的appid已经没有免费次数，测试及使用时请务必自行申请百度账号进行测试，否则调试时会有类似日志信息：`[WitBaiduAip]{"err_msg":"request pv too much","err_no":3305,"sn":"429568842021614503725"}`
+
 更新日志
 ---
+
+- 2021年2月28日 在AsrDemo界面上增加了一个回放录音的按钮，方便调试
 - 2019年1月12日更新支持了WWW类（可以兼容Unity5.x及以前版本）
 - 2018年8月21日 百度API支持了wav格式，移除第三方插件，直接使用原生API
 - 2018年3月29日 加入了UWP平台支持，移除naudio，使用mp3sharp  
